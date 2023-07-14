@@ -25,13 +25,18 @@ const enquiryControler = async (req, res) => {
 
 
 
-// claim leads controller
+//controller for claim the leads 
 
 const claimLeadsController=async (req, res) => {
     const { leadId } = req.params;
     const { employeeEmail } = req;
   
     try {
+    //  To check lead is already claimed or not
+      const lead= await enquiryModel.findOne({_id:leadId});
+      if(lead.claimedBy){
+        return res.status(409).json({ message: 'Lead  already claimed ' });
+      }
       // Find the employee
       const employee = await employeeModel.findOne({ email: employeeEmail });
       if (!employee) {
